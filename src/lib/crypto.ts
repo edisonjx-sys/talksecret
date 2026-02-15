@@ -181,13 +181,14 @@ export async function decryptMessage(secretCode: string, encryptedMessage: strin
     const key = await deriveKey(secretCode, salt);
 
     // 解密消息
+    // @ts-ignore - TypeScript type compatibility issue between Uint8Array and BufferSource
     const decrypted = await crypto.subtle.decrypt(
       {
         name: ENCRYPTION_CONFIG.algorithm,
         iv: iv,
       } as AesGcmParams,
       key,
-      (ciphertext as Uint8Array).buffer as ArrayBuffer
+      ciphertext
     );
 
     const decoder = new TextDecoder();
