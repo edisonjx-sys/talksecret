@@ -181,15 +181,14 @@ export async function decryptMessage(secretCode: string, encryptedMessage: strin
     const key = await deriveKey(secretCode, salt);
 
     // 解密消息
-    // 使用 slice() 创建新的 Uint8Array 以确保类型正确
-    const ciphertextBuffer = ciphertext.slice(0);
+    // 使用 new Uint8Array() 创建新实例以确保 ArrayBuffer 类型正确
     const decrypted = await crypto.subtle.decrypt(
       {
         name: ENCRYPTION_CONFIG.algorithm,
         iv: iv,
       } as AesGcmParams,
       key,
-      ciphertextBuffer
+      new Uint8Array(ciphertext)
     );
 
     const decoder = new TextDecoder();
