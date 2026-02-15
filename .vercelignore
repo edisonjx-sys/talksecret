@@ -1,0 +1,5 @@
+# Disable caching for TypeScript files to ensure latest code is used
+*.ts
+*.tsx
+.next
+node_modules
