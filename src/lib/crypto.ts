@@ -187,7 +187,7 @@ export async function decryptMessage(secretCode: string, encryptedMessage: strin
         iv: iv,
       } as AesGcmParams,
       key,
-      ciphertext
+      ciphertext.buffer as ArrayBuffer
     );
 
     const decoder = new TextDecoder();
