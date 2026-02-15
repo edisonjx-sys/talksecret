@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夹密 - 简笔画风格</title>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Zeyada&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #f5f5dc 0%, #faf0e6 50%, #f5f5dc 100%);
+            font-family: 'Patrick Hand', cursive;
+            color: #2c2c2c;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 手绘风格边框 */
+        .sketch-border {
+            border: 2px solid #4a4a4a;
+            border-radius: 2px 8px 4px 12px;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1), -1px -1px 0 rgba(255,255,255,0.5);
+        }
+
+        .sketch-border-thick {
+            border: 3px solid #4a4a4a;
+            border-radius: 3px 10px 5px 15px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.15), inset 0 0 20px rgba(0,0,0,0.02);
+        }
+
+        /* 手绘按钮 */
+        .sketch-btn {
+            background: #fefefe;
+            border: 2px solid #4a4a4a;
+            border-radius: 4px 8px 6px 10px;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: all 0.2s ease;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+
+        .sketch-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+        }
+
+        .sketch-btn-primary {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+        }
+
+        .sketch-btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 100%);
+            color: white;
+        }
+
+        /* 手绘输入框 */
+        .sketch-input {
+            background: #fefefe;
+            border: 2px solid #4a4a4a;
+            border-radius: 3px 8px 5px 12px;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.1rem;
+            padding: 12px;
+            outline: none;
+            width: 100%;
+        }
+
+        .sketch-input:focus {
+            border-color: #5b8bd5;
+            box-shadow: 0 0 0 3px rgba(91, 139, 213, 0.2);
+        }
+
+        /* 手绘卡片 */
+        .sketch-card {
+            background: #fefefe;
+            border: 3px solid #4a4a4a;
+            border-radius: 5px 15px 8px 20px;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1), inset 0 0 60px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        /* 胶带效果 */
+        .tape {
+            position: absolute;
+            width: 80px;
+            height: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            top: -12px;
+        }
+
+        .tape-left { left: 20px; }
+        .tape-center { left: 50%; transform: translateX(-50%) rotate(-1deg); }
+
+        /* 涂鸦装饰 */
+        .doodle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.6;
+            font-size: 1.5rem;
+        }
+
+        /* 手绘下划线 */
+        .sketch-underline {
+            position: relative;
+            display: inline-block;
+        }
+
+        .sketch-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: -5px;
+            right: -5px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, #5b8bd5 10%, #5b8bd5 90%, transparent 100%);
+            border-radius: 50%;
+            transform: rotate(-1deg);
+        }
+
+        /* 标签页 */
+        .sketch-tab {
+            background: #e8e8e8;
+            border: 2px solid #4a4a4a;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 10px 20px;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            bottom: -2px;
+        }
+
+        .sketch-tab.active {
+            background: #fefefe;
+            z-index: 1;
+            transform: translateY(-2px);
+        }
+
+        /* 提示框 */
+        .sketch-hint {
+            background: #fff9c4;
+            border: 2px dashed #4a4a4a;
+            border-radius: 5px 15px 10px 8px;
+            padding: 20px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .sketch-hint::before {
+            content: '💡';
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            font-size: 1.5rem;
+            background: #f5f5dc;
+            padding: 0 5px;
+        }
+
+        /* 成功/错误 */
+        .sketch-success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 5px 15px 10px 8px;
+            padding: 20px;
+        }
+
+        .sketch-error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 5px 15px 10px 8px;
+            padding: 20px;
+        }
+
+        /* 二维码 */
+        .qr-sketch {
+            background: white;
+            border: 3px solid #4a4a4a;
+            border-radius: 3px 10px 5px 12px;
+            padding: 15px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+            display: inline-block;
+        }
+
+        /* 动画 */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-2deg); }
+            75% { transform: rotate(2deg); }
+        }
+
+        .wiggle:hover {
+            animation: wiggle 0.3s ease-in-out;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .text-center { text-align: center; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-6 { margin-bottom: 24px; }
+        .mt-6 { margin-top: 24px; }
+        .mt-8 { margin-top: 32px; }
+        .p-4 { padding: 16px; }
+        .p-6 { padding: 24px; }
+        .px-4 { padding-left: 16px; padding-right: 16px; }
+        .py-3 { padding-top: 12px; padding-bottom: 12px; }
+        .flex { display: flex; }
+        .flex-1 { flex: 1; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .space-y-2 > * + * { margin-top: 8px; }
+        .space-y-4 > * + * { margin-top: 16px; }
+        .text-sm { font-size: 0.875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-6xl { font-size: 3.75rem; }
+        .font-bold { font-weight: bold; }
+        .w-full { width: 100%; }
+        .inline-block { display: inline-block; }
+        .relative { position: relative; }
+        .resize-none { resize: none; }
+        .block { display: block; }
+        .border-b-2 { border-bottom: 2px solid #9ca3af; }
+        .rounded-full { border-radius: 50%; }
+
+        @media (max-width: 768px) {
+            .grid-cols-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景涂鸦 -->
+    <span class="doodle" style="top: 10%; left: 5%;">✦</span>
+    <span class="doodle" style="top: 20%; right: 8%;">✧</span>
+    <span class="doodle" style="bottom: 15%; left: 10%; color: #d45b5b;">♥</span>
+    <span class="doodle" style="bottom: 25%; right: 5%; color: #5b8bd5; font-size: 2rem;">✎</span>
+    <span class="doodle" style="top: 40%; left: 3%; color: #d45b5b; font-size: 1.8rem;">★</span>
+    <span class="doodle" style="top: 60%; right: 3%; color: #5bd47b;">✿</span>
+
+    <div class="container">
+        <!-- 标题 -->
+        <div class="text-center mb-6">
+            <div class="sketch-card p-6 inline-block" style="transform: rotate(-1deg);">
+                <div class="tape tape-center"></div>
+                <h1 class="text-6xl font-bold" style="font-family: 'Zeyada', cursive; color: #2c2c2c;">
+                    <span class="sketch-underline">夹密</span>
+                </h1>
+                <p class="text-xl mt-3" style="color: #6a6a6a;">
+                    ✏️ 写下你的秘密，只有懂的人才能看懂
+                </p>
+            </div>
+        </div>
+
+        <!-- 主卡片 -->
+        <div class="sketch-card p-6 mb-6" style="transform: rotate(0.5deg);">
+            <div class="tape tape-center"></div>
+            
+            <!-- 标签页 -->
+            <div class="flex mb-6 border-b-2">
+                <button class="sketch-tab active">🔒 加密</button>
+                <button class="sketch-tab" style="margin-left: 8px;">🔓 解密</button>
+            </div>
+
+            <!-- 暗号输入 -->
+            <div class="mb-6">
+                <label class="block text-xl mb-2 font-bold">
+                    🔑 暗号 <span style="color: #6a6a6a; font-weight: normal;">(双方约定的密钥)</span>
+                </label>
+                <div class="flex gap-3">
+                    <input type="text" placeholder="例如：芒果" class="sketch-input" />
+                    <button class="sketch-btn sketch-btn-secondary wiggle" style="white-space: nowrap;">🎲 随机</button>
+                </div>
+            </div>
+
+            <!-- 加密界面 -->
+            <div class="mb-6">
+                <label class="block text-xl mb-2 font-bold">📝 明文消息</label>
+                <textarea placeholder="在这里写下你的秘密..." rows="5" class="sketch-input resize-none"></textarea>
+                <div class="text-right mt-1 text-base" style="color: #6a6a6a;">0 个字符</div>
+            </div>
+
+            <!-- 按钮 -->
+            <div class="flex gap-3 mb-6">
+                <button class="sketch-btn sketch-btn-primary flex-1 py-3 font-bold text-xl wiggle">⚡ 生成密文</button>
+                <button class="sketch-btn px-4 text-xl">🗑️</button>
+            </div>
+
+            <!-- 加密成功示例 -->
+            <div class="sketch-success mb-4" style="transform: rotate(-0.5deg);">
+                <div class="tape" style="right: 20px; top: -12px;"></div>
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">✨</span>
+                    <div>
+                        <h3 class="text-2xl font-bold">加密成功！</h3>
+                        <p style="color: #6a6a6a;">快把密文分享给朋友吧</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-base font-bold">密文：</span>
+                    <button class="sketch-btn px-3 py-1 text-base">📋 复制</button>
+                </div>
+                <textarea readonly rows="2" class="sketch-input text-sm" style="background: rgba(255,255,255,0.8);">Xitn.UIuY.UaZ7.ih/c.FLkA.JW8S.mT1M...</textarea>
+            </div>
+
+            <!-- 二维码 -->
+            <div class="sketch-card p-6 text-center" style="transform: rotate(0.5deg);">
+                <div class="mb-3">
+                    <span class="text-2xl mr-2">📱</span>
+                    <span class="text-xl font-bold">扫描二维码获取密文</span>
+                </div>
+                <div class="qr-sketch" style="transform: rotate(-1deg);">
+                    <div style="width: 180px; height: 180px; background: linear-gradient(45deg, #333 25%, transparent 25%), linear-gradient(-45deg, #333 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #333 75%), linear-gradient(-45deg, transparent 75%, #333 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 使用指南 -->
+        <div class="sketch-card p-6" style="transform: rotate(-0.5deg);">
+            <div class="tape tape-left"></div>
+            <div class="tape" style="right: 20px;"></div>
+            
+            <h3 class="text-2xl font-bold text-center mb-6">
+                <span class="sketch-underline">📖 使用指南</span>
+            </h3>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="sketch-border p-4" style="transform: rotate(0.5deg);">
+                    <h4 class="text-xl font-bold mb-3 flex items-center gap-2">
+                        <span>🔒</span>
+                        <span>加密步骤</span>
+                    </h4>
+                    <ol class="space-y-2 text-lg">
+                        <li class="flex items-start gap-2">
+                            <span style="color: #5b8bd5; font-weight: bold;">1.</span>
+                            <span>输入暗号（如"芒果"）</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span style="color: #5b8bd5; font-weight: bold;">2.</span>
+                            <span>写下你的秘密消息</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span style="color: #5b8bd5; font-weight: bold;">3.</span>
+                            <span>点击"生成密文"</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span style="color: #5b8bd5; font-weight: bold;">4.</span>
+                            <span>分享密文或二维码</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="sketch-border p-4" style="transform: rotate(-0.5deg);">
+                    <h4 class="text-xl font-bold mb-3 flex items-center gap-2">
+                        <span>🔓</span>
+                        <span>解密步骤</span>
+                    </h4>
+                    <ol class="space-y-2 text-lg">
+                        <li class="flex items-start gap-2">
+                            <span style="color: #d45b5b; font-weight: bold;">1.</span>
+                            <span>切换到"解密"标签</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span style="color: #d45b5b; font-weight: bold;">2.</span>
+                            <span>输入相同的暗号</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span style="color: #d45b5b; font-weight: bold;">3.</span>
+                            <span>粘贴密文</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span style="color: #d45b5b; font-weight: bold;">4.</span>
+                            <span>点击"解密消息"</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="sketch-hint">
+                <p class="text-lg leading-relaxed">
+                    <strong>安全小提示：</strong>本工具使用 AES-256-GCM 军用级加密，所有操作都在你的浏览器里完成，
+                    <span style="color: #28a745; font-weight: bold;">消息不会上传到任何服务器</span>。
+                    暗号是唯一的钥匙，记得用安全的方式告诉对方哦！
+                </p>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="mt-8 text-center">
+            <div class="sketch-border inline-flex items-center gap-2 px-6 py-3" style="transform: rotate(0.5deg); background: rgba(255,255,255,0.5);">
+                <span class="text-2xl">🔐</span>
+                <span class="text-lg font-bold">夹密</span>
+                <span style="color: #6a6a6a;">|</span>
+                <span style="color: #6a6a6a;">v1.0</span>
+                <span style="color: #6a6a6a;">|</span>
+                <span>端到端加密</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

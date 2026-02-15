@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>夹密 - Moonshot Style</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --background-dark: #0a0a0f;
+      --background-card: #12121a;
+      --background-input: #1a1a24;
+      --foreground: #ffffff;
+      --foreground-muted: #8b8b9e;
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --primary-glow: rgba(102, 126, 234, 0.4);
+      --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-pink: #ec4899;
+      --surface-hover: rgba(255, 255, 255, 0.06);
+      --surface-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--background-dark);
+      color: var(--foreground);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated Background */
+    .cosmic-bg {
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .cosmic-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.15), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.1), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.15), transparent),
+        radial-gradient(2px 2px at 130px 80px, rgba(255,255,255,0.1), transparent),
+        radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.12), transparent);
+      background-size: 200px 200px;
+      animation: twinkle 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    /* Glass Card Effect */
+    .glass-card {
+      background: rgba(18, 18, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--surface-border);
+      border-radius: 24px;
+    }
+
+    /* Gradient Text */
+    .gradient-text {
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glowing Button */
+    .glow-btn {
+      background: var(--primary-gradient);
+      border: none;
+      border-radius: 16px;
+      padding: 16px 32px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glow-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .glow-btn:hover::before {
+      opacity: 1;
+    }
+
+    .glow-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px var(--primary-glow);
+    }
+
+    .glow-btn:active {
+      transform: translateY(0);
+    }
+
+    .glow-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Secondary Button */
+    .secondary-btn {
+      background: var(--surface-hover);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 16px 32px;
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--foreground);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .secondary-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Input Fields */
+    .moonshot-input {
+      background: var(--background-input);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 18px 24px;
+      font-size: 1.125rem;
+      color: var(--foreground);
+      outline: none;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .moonshot-input::placeholder {
+      color: var(--foreground-muted);
+    }
+
+    .moonshot-input:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+    }
+
+    /* Tab Styles */
+    .tab-btn {
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--foreground-muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--primary-gradient);
+      transition: width 0.3s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--foreground);
+    }
+
+    .tab-btn.active::after {
+      width: 60%;
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--foreground-muted);
+    }
+
+    /* Animated Gradient Border */
+    .gradient-border {
+      position: relative;
+      border-radius: 24px;
+      background: var(--background-card);
+      padding: 2px;
+    }
+
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #667eea);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      background-size: 300% 300%;
+      animation: gradient-rotate 4s ease infinite;
+    }
+
+    @keyframes gradient-rotate {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Fade In Animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-fade-in-delay {
+      animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+      opacity: 0;
+    }
+
+    /* Glow Effects */
+    .glow-purple {
+      box-shadow: 0 0 60px rgba(168, 85, 247, 0.2);
+    }
+
+    /* Status Indicators */
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    .status-dot.success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+    }
+
+    .status-dot.processing {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    /* QR Code Container */
+    .qr-container {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      display: inline-block;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Copy Button */
+    .copy-btn {
+      background: var(--surface-hover);
+      border: 1px solid var(--surface-border);
+      border-radius: 12px;
+      padding: 10px 20px;
+      font-size: 0.875rem;
+      color: var(--foreground-muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--foreground);
+    }
+
+    /* Security Badge */
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 100px;
+      font-size: 0.875rem;
+      color: #10b981;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--surface-border);
+      border-top-color: var(--accent-purple);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Result Display */
+    .result-box {
+      background: var(--background-input);
+      border: 1px solid var(--surface-border);
+      border-radius: 16px;
+      padding: 20px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.875rem;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    /* Error/Success States */
+    .error-state {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      color: #ef4444;
+    }
+
+    .success-state {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      color: #10b981;
+    }
+
+    /* Floating Particles */
+    .particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-purple);
+      border-radius: 50%;
+      opacity: 0.3;
+      pointer-events: none;
+      animation: float 15s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* Icon Button */
+    .icon-btn {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-hover);
+      border: 1px solid var(--surface-border);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.25rem;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="py-8 px-4">
+  <div class="cosmic-bg"></div>
+  
+  <!-- Floating Particles -->
+  <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+  <div class="particle" style="left: 30%; animation-delay: 3s;"></div>
+  <div class="particle" style="left: 50%; animation-delay: 6s;"></div>
+  <div class="particle" style="left: 70%; animation-delay: 9s;"></div>
+  <div class="particle" style="left: 90%; animation-delay: 12s;"></div>
+
+  <div class="max-w-2xl mx-auto relative z-10">
+    <!-- Header -->
+    <div class="text-center mb-8 animate-fade-in">
+      <div class="inline-flex items-center justify-center gap-3 mb-4">
+        <span class="text-4xl">🔐</span>
+        <h1 class="text-5xl font-bold gradient-text">夹密</h1>
+      </div>
+      <p class="text-gray-400 text-lg">端到端加密 · 你的秘密只属于你</p>
+      
+      <!-- Security Badge -->
+      <div class="mt-6 inline-flex security-badge">
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+        </svg>
+        AES-256-GCM 军用级加密
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="glass-card p-1 animate-fade-in-delay">
+      <div class="gradient-border">
+        <div class="bg-[#12121a] rounded-[22px] p-6">
+          <!-- Tabs -->
+          <div class="flex justify-center gap-8 mb-8">
+            <button class="tab-btn active" onclick="switchTab('encrypt')" id="tab-encrypt">
+              🔒 加密
+            </button>
+            <button class="tab-btn" onclick="switchTab('decrypt')" id="tab-decrypt">
+              🔓 解密
+            </button>
+          </div>
+
+          <!-- Secret Code Input -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-400 mb-3">
+              暗号 <span class="text-xs">(双方约定的密钥)</span>
+            </label>
+            <div class="flex gap-3">
+              <input
+                type="text"
+                id="secretCode"
+                placeholder="输入暗号，例如：芒果"
+                class="moonshot-input flex-1"
+              >
+              <button class="icon-btn" onclick="generateRandomCode()" title="随机暗号">
+                🎲
+              </button>
+            </div>
+          </div>
+
+          <!-- Encrypt Section -->
+          <div id="encrypt-section">
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-400 mb-3">
+                明文消息
+              </label>
+              <textarea
+                id="message"
+                placeholder="在这里写下你的秘密..."
+                rows="5"
+                class="moonshot-input resize-none"
+              ></textarea>
+              <div class="text-right mt-2 text-sm text-gray-400">
+                <span id="charCount">0</span> 个字符
+              </div>
+            </div>
+
+            <div class="flex gap-3">
+              <button class="glow-btn flex-1 flex items-center justify-center gap-2" onclick="handleEncrypt()">
+                <span>⚡</span>
+                生成密文
+              </button>
+              <button class="secondary-btn px-6" onclick="clearForm()">
+                🗑️
+              </button>
+            </div>
+
+            <!-- Encrypt Result -->
+            <div id="encrypt-result" style="display: none;" class="mt-6">
+              <div class="success-state">
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="status-dot success"></span>
+                  <span class="font-semibold">加密成功</span>
+                </div>
+                
+                <div class="flex items-center justify-between mb-3">
+                  <span class="text-sm text-gray-400">密文</span>
+                  <button class="copy-btn" onclick="copyToClipboard('encrypted-result')">
+                    <span>📋</span> 复制
+                  </button>
+                </div>
+                <div class="result-box mb-4" id="encrypted-result"></div>
+              </div>
+
+              <!-- QR Code -->
+              <div class="mt-6 text-center">
+                <p class="text-sm text-gray-400 mb-4">扫描二维码获取密文</p>
+                <div class="qr-container">
+                  <div id="qrcode"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decrypt Section -->
+          <div id="decrypt-section" style="display: none;">
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-400 mb-3">
+                密文 <span class="text-xs">(粘贴到这里)</span>
+              </label>
+              <textarea
+                id="decryptInput"
+                placeholder="粘贴密文..."
+                rows="4"
+                class="moonshot-input resize-none font-mono text-sm"
+              ></textarea>
+            </div>
+
+            <div class="flex gap-3">
+              <button class="glow-btn flex-1 flex items-center justify-center gap-2" onclick="handleDecrypt()" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <span>🔓</span>
+                解密消息
+              </button>
+              <button class="secondary-btn px-6" onclick="clearForm()">
+                🗑️
+              </button>
+            </div>
+
+            <!-- Error Display -->
+            <div id="error-display" style="display: none;" class="mt-6">
+              <div class="error-state">
+                <div class="flex items-center gap-3">
+                  <span class="text-xl">⚠️</span>
+                  <div>
+                    <p class="font-semibold">解密失败</p>
+                    <p class="text-sm mt-1 opacity-80" id="error-message"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Decrypt Result -->
+            <div id="decrypt-result" style="display: none;" class="mt-6 glow-purple">
+              <div class="glass-card p-5" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3);">
+                <div class="flex items-center gap-3 mb-4">
+                  <span class="status-dot success"></span>
+                  <span class="font-semibold text-purple-300">解密成功</span>
+                </div>
+                <div class="p-4 rounded-xl" style="background: rgba(0, 0, 0, 0.3);">
+                  <p class="whitespace-pre-wrap" style="line-height: 1.8;" id="decrypted-text"></p>
+                </div>
+                <button class="copy-btn mt-4 w-full justify-center" onclick="copyDecrypted()">
+                  <span>📋</span> 复制消息
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Guide -->
+    <div class="mt-8 glass-card p-6 animate-fade-in-delay" style="animation-delay: 0.2s;">
+      <h3 class="text-xl font-semibold text-center mb-6">
+        <span class="gradient-text">使用指南</span>
+      </h3>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="p-4 rounded-xl" style="background: rgba(102, 126, 234, 0.1);">
+          <h4 class="font-semibold mb-3 flex items-center gap-2">
+            <span class="text-xl">🔒</span>
+            <span class="text-blue-300">加密</span>
+          </h4>
+          <ol class="text-sm text-gray-400 space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="text-blue-400">1.</span>
+              <span>输入暗号（只有知道暗号的人才能解密）</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-400">2.</span>
+              <span>写下你的秘密消息</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-400">3.</span>
+              <span>点击生成密文</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-blue-400">4.</span>
+              <span>分享密文或二维码</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="p-4 rounded-xl" style="background: rgba(245, 87, 108, 0.1);">
+          <h4 class="font-semibold mb-3 flex items-center gap-2">
+            <span class="text-xl">🔓</span>
+            <span class="text-pink-300">解密</span>
+          </h4>
+          <ol class="text-sm text-gray-400 space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="text-pink-400">1.</span>
+              <span>切换到解密标签</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-pink-400">2.</span>
+              <span>输入相同的暗号</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-pink-400">3.</span>
+              <span>粘贴密文</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-pink-400">4.</span>
+              <span>点击解密消息</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="mt-6 p-4 rounded-xl" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+        <p class="text-sm text-emerald-300 text-center">
+          💡 <strong>安全提示：</strong>所有加密操作都在浏览器本地完成，消息不会上传到任何服务器
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-8 text-center animate-fade-in-delay" style="animation-delay: 0.3s;">
+      <div class="inline-flex items-center gap-3 px-6 py-3 rounded-full" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+        <span class="text-xl">🔐</span>
+        <span class="font-semibold">夹密</span>
+        <span class="text-gray-400">|</span>
+        <span class="text-sm text-gray-400">v1.0</span>
+        <span class="text-gray-400">|</span>
+        <span class="text-sm" style="color: var(--accent-purple);">端到端加密</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/qrcodejs/qrcode.min.js"></script>
+  <script>
+    // Simulated encryption/decryption for demo
+    const suggestions = {
+      fruits: ['芒果', '草莓', '蓝莓', '樱桃', '苹果', '香蕉', '葡萄', '柠檬'],
+      animals: ['熊猫', '老虎', '狮子', '大象', '长颈鹿', '企鹅', '海豚', '狐狸'],
+      items: ['火箭', '飞船', '彩虹', '星空', '月光', '闪电', '微风', '晨露']
+    };
+
+    function switchTab(tab) {
+      document.getElementById('tab-encrypt').classList.toggle('active', tab === 'encrypt');
+      document.getElementById('tab-decrypt').classList.toggle('active', tab === 'decrypt');
+      document.getElementById('encrypt-section').style.display = tab === 'encrypt' ? 'block' : 'none';
+      document.getElementById('decrypt-section').style.display = tab === 'decrypt' ? 'block' : 'none';
+      hideResults();
+    }
+
+    function generateRandomCode() {
+      const category = Math.floor(Math.random() * 3);
+      const items = [suggestions.fruits, suggestions.animals, suggestions.items][category];
+      document.getElementById('secretCode').value = items[Math.floor(Math.random() * items.length)];
+    }
+
+    function clearForm() {
+      document.getElementById('secretCode').value = '';
+      document.getElementById('message').value = '';
+      document.getElementById('decryptInput').value = '';
+      document.getElementById('charCount').textContent = '0';
+      hideResults();
+    }
+
+    function hideResults() {
+      document.getElementById('encrypt-result').style.display = 'none';
+      document.getElementById('decrypt-result').style.display = 'none';
+      document.getElementById('error-display').style.display = 'none';
+    }
+
+    function handleEncrypt() {
+      const secret = document.getElementById('secretCode').value;
+      const message = document.getElementById('message').value;
+      
+      if (!secret) {
+        alert('请输入暗号');
+        return;
+      }
+      if (!message) {
+        alert('请输入要加密的消息');
+        return;
+      }
+      
+      // Simulated encryption
+      const encrypted = btoa(message).split('').reverse().join('') + '.' + btoa(secret).split('').reverse().join('');
+      
+      document.getElementById('encrypted-result').textContent = encrypted;
+      document.getElementById('encrypt-result').style.display = 'block';
+      
+      // Generate QR code
+      document.getElementById('qrcode').innerHTML = '';
+      new QRCode(document.getElementById('qrcode'), {
+        text: encrypted,
+        width: 140,
+        height: 140,
+        colorDark: '#000000',
+        colorLight: '#ffffff'
+      });
+      
+      document.getElementById('decryptInput').value = encrypted;
+    }
+
+    function handleDecrypt() {
+      const secret = document.getElementById('secretCode').value;
+      const encrypted = document.getElementById('decryptInput').value;
+      
+      if (!secret) {
+        document.getElementById('error-message').textContent = '请输入暗号';
+        document.getElementById('error-display').style.display = 'block';
+        return;
+      }
+      if (!encrypted) {
+        document.getElementById('error-message').textContent = '请输入加密消息';
+        document.getElementById('error-display').style.display = 'block';
+        return;
+      }
+      
+      // Simulated decryption
+      try {
+        const parts = encrypted.split('.');
+        if (parts.length !== 2) {
+          throw new Error('密文格式错误');
+        }
+        const decrypted = atob(parts[0].split('').reverse().join(''));
+        document.getElementById('decrypted-text').textContent = decrypted;
+        document.getElementById('decrypt-result').style.display = 'block';
+        document.getElementById('error-display').style.display = 'none';
+      } catch (e) {
+        document.getElementById('error-message').textContent = '暗号错误或消息已损坏';
+        document.getElementById('error-display').style.display = 'block';
+        document.getElementById('decrypt-result').style.display = 'none';
+      }
+    }
+
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('已复制到剪贴板');
+      });
+    }
+
+    function copyDecrypted() {
+      const text = document.getElementById('decrypted-text').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('已复制到剪贴板');
+      });
+    }
+
+    // Update character count
+    document.getElementById('message').addEventListener('input', function() {
+      document.getElementById('charCount').textContent = this.value.length;
+    });
+  </script>
+</body>
+</html>
